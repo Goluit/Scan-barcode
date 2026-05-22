@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Scan Barcode Online Gratis – Pemindai Terbaik Indonesia</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    
+    /* Scanner Box Styling - Image 1 Layout with Image 2 Overlay Elements */
+    #scanner-box { 
+      position: relative; 
+      max-width: 380px; 
+      margin: 0 auto; 
+      border: 4px solid #3b82f6; 
+      border-radius: 24px; 
+      overflow: hidden; 
+      background: #000000;
+      box-shadow: 0 0 40px rgba(59, 130, 246, 0.25);
+      aspect-ratio: 4/3;
+    }
+    
+    /* Decorative Corners */
+    .corner { position: absolute; width: 40px; height: 40px; border: 5px solid #3b82f6; z-index: 10; border-radius: 8px; box-shadow: 0 0 12px rgba(59, 130, 246, 0.5); }
+    .top-left { top: 16px; left: 16px; border-right: none; border-bottom: none; border-radius: 8px 0 0 0; }
+    .top-right { top: 16px; right: 16px; border-left: none; border-bottom: none; border-radius: 0 8px 0 0; }
+    .bottom-left { bottom: 16px; left: 16px; border-right: none; border-top: none; border-radius: 0 0 0 8px; }
+    .bottom-right { bottom: 16px; right: 16px; border-left: none; border-top: none; border-radius: 0 0 8px 0; }
+    
+    /* Placeholder Image (Vegetable Market) & Video */
+    #placeholder { 
+      width: 100%; height: 100%; object-fit: cover; transition: opacity 0.4s ease; z-index: 1; 
+    }
+    #reader video { object-fit: cover; border-radius: 20px; width: 100%; height: 100%; z-index: 2; }
+    
+    /* Laser Animation */
+    .scan-laser { position: absolute; width: 100%; height: 2px; background: #3b82f6; box-shadow: 0 0 15px #3b82f6; animation: scan 2s infinite linear; display: none; z-index: 5; }
+    @keyframes scan { 0% {top: 10%; opacity: 0;} 5% {opacity: 1;} 95% {opacity: 1;} 100% {top: 90%; opacity: 0;} }
+
+    /* Hide Library Defaults */
+    #reader__dashboard_section_csr span, #reader__dashboard_section_swaplink { display: none !important; }
+    
+    /* Floating Action Buttons (Image 2 Professional Style) */
+    .scanner-fab {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      background: rgba(15, 23, 42, 0.75); /* Dark Zinc */
+      backdrop-filter: blur(8px); /* Glassmorphism */
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      z-index: 20;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .scanner-fab:hover {
+      background: #2563eb;
+      transform: scale(1.1);
+      border-color: #3b82f6;
+      box-shadow: 0 0 15px rgba(37, 99, 235, 0.6);
+    }
+    .scanner-fab.active-torch {
+      background: #fbbf24; /* Yellow for torch */
+      color: #000;
+      border-color: #fbbf24;
+      box-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen flex flex-col">
+
+  <!-- MAIN PAGE CONTENT -->
+  <div class="max-w-4xl mx-auto px-5 py-8 w-full flex-grow flex flex-col">
+
+    <!-- Header -->
+    <div class="text-center mb-10">
+      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-50 to-zinc-400">Scan Barcode Online Gratis</h1>
+      <p class="text-emerald-400 font-bold text-lg mt-2">Pemindai Terbaik Indonesia</p>
+      <p class="text-zinc-400 mt-3 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
+        Teknologi pemindaian canggih langsung di browser Anda. Tanpa aplikasi, tanpa registrasi, 100% aman.
+      </p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex bg-zinc-900/80 backdrop-blur-md rounded-2xl p-1.5 mb-10 shadow-xl shadow-black/40 border border-zinc-800">
+      <button onclick="switchTab(0)" id="tab0" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/20">
+        <i class="fa-solid fa-camera mr-2"></i> Kamera Scan
+      </button>
+      <button onclick="switchTab(1)" id="tab1" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all text-zinc-400 hover:text-white hover:bg-zinc-800">
+        <i class="fa-solid fa-upload mr-2"></i> Unggah Gambar
+      </button>
+      <button onclick="switchTab(2)" id="tab2" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all text-zinc-400 hover:text-white hover:bg-zinc-800">
+        <i class="fa-solid fa-clock-rotate-left mr-2"></i> Riwayat
+      </button>
+    </div>
+
+    <!-- CAMERA TAB -->
+    <div id="content0" class="flex-grow flex flex-col items-center">
+      
+      <!-- Scanner Box: Image 1 (Vegetable Market) + Image 2 (Floating Icons) -->
+      <div id="scanner-box" class="w-full max-w-md relative group">
+        
+        <!-- Placeholder Image (Vegetable Market - Exactly like First Image) -->
+        <img id="placeholder" src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?q=80&w=1000&auto=format&fit=crop" alt="Scan Area">
+        
+        <!-- Decorative Corners -->
+        <div class="corner top-left"></div>
+        <div class="corner top-right"></div>
+        <div class="corner bottom-left"></div>
+        <div class="corner bottom-right"></div>
+        
+        <!-- Floating Upload Icon (Bottom Left - Professional Style) -->
+        <label for="uploadInput" class="scanner-fab bottom-5 left-5" title="Unggah Gambar">
+          <i class="fa-solid fa-image text-lg"></i>
+        </label>
+        
+        <!-- Hidden Input for Upload -->
+        <input type="file" id="uploadInput" accept="image/*" class="hidden" onchange="scanUploadedFile(event)">
+
+        <!-- Floating Torch Icon (Bottom Right - Professional Style) -->
+        <div id="torchBtnFab" onclick="toggleTorch()" class="scanner-fab bottom-5 right-5 hidden" title="Senter">
+          <i class="fa-solid fa-lightbulb text-lg"></i>
+        </div>
+        
+        <!-- Laser Line -->
+        <div id="laser" class="scan-laser"></div>
+        
+        <!-- Reader Mount (For Camera) -->
+        <div id="reader" class="w-full h-full absolute top-0 left-0 z-0"></div>
+        
+        <!-- Center Text (Visible when image fades) -->
+        <div id="scan-prompt" class="absolute inset-0 flex flex-col items-center justify-center text-zinc-600 pointer-events-none z-0 opacity-0 transition-opacity duration-300">
+          <div class="w-16 h-16 bg-zinc-900 rounded-full flex items-center justify-center mb-3 border border-zinc-800">
+            <i class="fa-solid fa-expand text-2xl opacity-50"></i>
+          </div>
+          <p class="text-sm font-medium opacity-50">Area Pemindaian</p>
+        </div>
+      </div>
+
+      <!-- External Controls -->
+      <div class="mt-8 w-full max-w-md flex flex-col gap-4">
+        <button onclick="startScan()" id="btn-start" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-4 rounded-2xl font-bold text-lg shadow-xl shadow-blue-900/30 transition-all active:scale-[0.98] flex items-center justify-center gap-3">
+          <i class="fa-solid fa-power-off"></i> Mulai Kamera
+        </button>
+        <button onclick="stopScan()" id="btn-stop" class="hidden w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white py-4 rounded-2xl font-bold text-lg shadow-xl shadow-red-900/30 transition-all active:scale-[0.98] flex items-center justify-center gap-3">
+          <i class="fa-solid fa-stop"></i> Berhenti Scan
+        </button>
+      </div>
+
+      <div class="flex justify-center gap-4 mt-8 flex-wrap">
+        <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">✅ Instan</span>
+        <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">⭐ 100% Gratis</span>
+        <span class="bg-red-500/10 text-red-400 border border-red-500/20 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">❤️ Aman</span>
+      </div>
+    </div>
+
+    <!-- UPLOAD TAB -->
+    <div id="content1" class="hidden text-center py-16">
+      <div class="max-w-md mx-auto">
+        <label for="uploadInput" class="block w-full bg-zinc-900 border-2 border-dashed border-zinc-700 hover:border-blue-500 hover:bg-zinc-800/50 transition-all px-12 py-16 rounded-3xl cursor-pointer group">
+          <div class="w-20 h-20 bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300">
+            <i class="fa-solid fa-cloud-arrow-up text-4xl text-zinc-400 group-hover:text-blue-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Pilih Gambar dari Galeri</h3>
+          <p class="text-zinc-500 text-sm">Klik sekali saja. Mendukung JPG, PNG, WEBP.</p>
+        </label>
+      </div>
+    </div>
+
+    <!-- HISTORY TAB -->
+    <div id="content2" class="hidden pb-20">
+      <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <h2 class="text-2xl font-bold">Riwayat Scan</h2>
+        <div class="flex gap-2">
+          <button onclick="exportJSON()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl text-xs font-bold border border-zinc-700 transition-colors">JSON</button>
+          <button onclick="exportCSV()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl text-xs font-bold border border-zinc-700 transition-colors">CSV</button>
+          <button onclick="clearAllHistory()" class="px-4 py-2 bg-red-900/30 hover:bg-red-900/40 text-red-400 border border-red-900/50 rounded-xl text-xs font-bold transition-colors">Hapus</button>
+        </div>
+      </div>
+      <div id="historyListMain" class="space-y-3 max-h-[600px] overflow-y-auto pr-1"></div>
+    </div>
+
+    <!-- === LONG CONTENT SECTIONS === -->
+
+    <!-- How It Works -->
+    <section class="mt-24">
+      <div class="text-center mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4">Cara Kerja</h2>
+        <div class="h-1 w-20 bg-blue-600 mx-auto rounded-full"></div>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8 text-center">
+        <div class="p-8 bg-zinc-900/50 rounded-3xl border border-zinc-800 hover:border-blue-500/30 transition-all duration-300">
+          <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold shadow-lg shadow-blue-600/20">1</div>
+          <h3 class="font-bold text-xl mb-3">Buka Kamera</h3>
+          <p class="text-zinc-400 leading-relaxed">Izinkan akses kamera browser Anda. Kami memprioritaskan privasi, tidak ada data yang direkam.</p>
+        </div>
+        <div class="p-8 bg-zinc-900/50 rounded-3xl border border-zinc-800 hover:border-blue-500/30 transition-all duration-300">
+          <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold shadow-lg shadow-blue-600/20">2</div>
+          <h3 class="font-bold text-xl mb-3">Arahkan Kode</h3>
+          <p class="text-zinc-400 leading-relaxed">Tunjukkan barcode atau QR ke layar. Sistem kami mendeteksi kode secara otomatis.</p>
+        </div>
+        <div class="p-8 bg-zinc-900/50 rounded-3xl border border-zinc-800 hover:border-blue-500/30 transition-all duration-300">
+          <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold shadow-lg shadow-blue-600/20">3</div>
+          <h3 class="font-bold text-xl mb-3">Dapatkan Hasil</h3>
+          <p class="text-zinc-400 leading-relaxed">Informasi produk lengkap ditampilkan instan. Salin atau cari info lebih lanjut.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Supported Formats (Detailed) -->
+    <section class="mt-20 bg-zinc-900/20 py-16 rounded-3xl border border-zinc-800/50">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl font-bold mb-2">Format yang Didukung</h2>
+        <p class="text-zinc-500">Kompatibel dengan standar global industri</p>
+      </div>
+      <div class="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">QR Code</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">EAN-13</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">EAN-8</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">UPC-A</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">UPC-E</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">Code 128</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">Code 39</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">Code 93</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">ITF</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">Data Matrix</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">PDF417</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">Aztec</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">MaxiCode</span>
+        <span class="px-5 py-2 bg-zinc-900 rounded-xl text-sm font-medium border border-zinc-800 text-zinc-300 shadow-sm">Codabar</span>
+      </div>
+    </section>
+
+    <!-- NEW SECTION: KEUNGGULAN KAMI (Checkmarks) -->
+    <section class="mt-20">
+      <div class="text-center mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4">Keunggulan Kami</h2>
+        <div class="h-1 w-20 bg-blue-600 mx-auto rounded-full"></div>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800 hover:border-blue-500/30 transition-all">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-check text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-lg">Tanpa Aplikasi</h3>
+              <p class="text-zinc-400 text-sm mt-1">Hemat memori HP, tidak perlu install app tambahan.</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800 hover:border-blue-500/30 transition-all">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-emerald-600/20 text-emerald-400 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-check text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-lg">100% Gratis</h3>
+              <p class="text-zinc-400 text-sm mt-1">Tidak ada biaya tersembunyi atau langganan berbayar.</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800 hover:border-blue-500/30 transition-all">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-check text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-lg">Privasi Aman</h3>
+              <p class="text-zinc-400 text-sm mt-1">Data diproses lokal di perangkat Anda (Client-Side).</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800 hover:border-blue-500/30 transition-all">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-orange-600/20 text-orange-400 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-check text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-lg">Kecepatan Tinggi</h3>
+              <p class="text-zinc-400 text-sm mt-1">Hasil deteksi instan dalam hitungan detik.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BIG DETAILED SECTION: MENGAPA MEMILIH KAMI? -->
+    <section class="mt-20 bg-zinc-900/20 py-20 rounded-3xl border border-zinc-800/50">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Mengapa Memilih Kami?</h2>
+        <p class="text-zinc-400 text-lg max-w-2xl mx-auto">
+          Standar baru dalam pemindaian barcode digital. Kami menggabungkan teknologi terkini dengan desain yang intuitif.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+        <!-- Item 1 -->
+        <div class="flex gap-6 items-start">
+          <div class="w-20 h-20 shrink-0 bg-blue-600 rounded-2xl flex items-center justify-center text-4xl shadow-xl shadow-blue-600/30">
+            <i class="fa-solid fa-shield-halved text-white"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-white mb-3">Keamanan Tingkat Tinggi</h3>
+            <p class="text-zinc-400 leading-relaxed">Berbeda dengan aplikasi lain yang mungkin mengumpulkan data pribadi, sistem kami berjalan 100% di browser Anda. Tidak ada gambar yang dikirim ke server, menjamin privasi Anda tetap utuh dan aman dari akses yang tidak diinginkan.</p>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="flex gap-6 items-start">
+          <div class="w-20 h-20 shrink-0 bg-emerald-600 rounded-2xl flex items-center justify-center text-4xl shadow-xl shadow-emerald-600/30">
+            <i class="fa-solid fa-globe text-white"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-white mb-3">Akses Tanpa Batas</h3>
+            <p class="text-zinc-400 leading-relaxed">Tidak ada batasan jumlah scan. Anda dapat memindai ratusan bahkan ribuan barcode sehari-hari untuk kebutuhan inventaris toko, gudang, atau penggunaan personal tanpa biaya tambahan sedikitpun.</p>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="flex gap-6 items-start">
+          <div class="w-20 h-20 shrink-0 bg-purple-600 rounded-2xl flex items-center justify-center text-4xl shadow-xl shadow-purple-600/30">
+            <i class="fa-solid fa-bolt text-white"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-white mb-3">Kecepatan Super Cepat</h3>
+            <p class="text-zinc-400 leading-relaxed">Mesin pemindai kami telah dioptimalkan menggunakan algoritma WebAssembly modern untuk memberikan hasil decoding dalam waktu kurang dari 0.5 detik, bahkan pada perangkat kelas menengah sekalipun.</p>
+          </div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="flex gap-6 items-start">
+          <div class="w-20 h-20 shrink-0 bg-orange-600 rounded-2xl flex items-center justify-center text-4xl shadow-xl shadow-orange-600/30">
+            <i class="fa-solid fa-wand-magic-sparkles text-white"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-white mb-3">Kecerdasan Buatan (AI)</h3>
+            <p class="text-zinc-400 leading-relaxed">Algoritma kami cerdas dalam mengenali kode bahkan dalam kondisi pencahayaan buruk, sudut miring, atau pada permukaan yang reflektif, memastikan akurasi maksimal yang tidak dimiliki pesaing.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features (Additional Section) -->
+    <section class="mt-20">
+      <h2 class="text-2xl font-bold text-center mb-12">Fitur Utama</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-zinc-900/50 p-6 rounded-2xl border border-zinc-800 hover:border-blue-500/30 transition-colors">
+          <i class="fa-solid fa-bolt text-yellow-400 text-3xl mb-4"></i>
+          <h3 class="font-bold text-lg mb-2">Instan</h3>
+          <p class="text-zinc-400 text-sm">Hasil dalam hitungan detik tanpa loading lama.</p>
+        </div>
+        <div class="bg-zinc-900/50 p-6 rounded-2xl border border-zinc-800 hover:border-blue-500/30 transition-colors">
+          <i class="fa-solid fa-shield-halved text-emerald-400 text-3xl mb-4"></i>
+          <h3 class="font-bold text-lg mb-2">Privasi</h3>
+          <p class="text-zinc-400 text-sm">Data diproses lokal di perangkat Anda.</p>
+        </div>
+        <div class="bg-zinc-900/50 p-6 rounded-2xl border border-zinc-800 hover:border-blue-500/30 transition-colors">
+          <i class="fa-solid fa-cloud-arrow-down text-blue-400 text-3xl mb-4"></i>
+          <h3 class="font-bold text-lg mb-2">Ekspor Data</h3>
+          <p class="text-zinc-400 text-sm">Unduh riwayat dalam format CSV atau JSON.</p>
+        </div>
+        <div class="bg-zinc-900/50 p-6 rounded-2xl border border-zinc-800 hover:border-blue-500/30 transition-colors">
+          <i class="fa-solid fa-mobile-screen text-purple-400 text-3xl mb-4"></i>
+          <h3 class="font-bold text-lg mb-2">Responsif</h3>
+          <p class="text-zinc-400 text-sm">Tampilan sempurna di semua ukuran layar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="mt-24">
+      <h2 class="text-2xl font-bold text-center mb-10">Ulasan Pengguna</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800 shadow-lg">
+          <div class="flex text-yellow-500 mb-4 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <p class="text-zinc-300 text-sm italic mb-6">"Sangat membantu saya membandingkan harga produk di minimarket. Scan-nya cepet banget!"</p>
+          <div class="flex items-center gap-3 border-t border-zinc-800 pt-4"><div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold text-xs">RD</div><p class="text-sm font-bold">Rina Dewi</p></div>
+        </div>
+        <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800 shadow-lg">
+          <div class="flex text-yellow-500 mb-4 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <p class="text-zinc-300 text-sm italic mb-6">"Suka banget sama dark mode-nya, enak di mata. Fitur history scannya juga ngebantu buat inventory."</p>
+          <div class="flex items-center gap-3 border-t border-zinc-800 pt-4"><div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center font-bold text-xs">AP</div><p class="text-sm font-bold">Agus Pratama</p></div>
+        </div>
+        <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800 shadow-lg">
+          <div class="flex text-yellow-500 mb-4 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+          <p class="text-zinc-300 text-sm italic mb-6">"Profesional banget. Gak ada iklan, gak ribet. Langsung jalan di Chrome HP saya."</p>
+          <div class="flex items-center gap-3 border-t border-zinc-800 pt-4"><div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center font-bold text-xs">BS</div><p class="text-sm font-bold">Budi Santoso</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW BLOG SECTION -->
+    <section class="mt-24">
+      <div class="text-center mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4">Blog Terbaru</h2>
+        <p class="text-zinc-500">Tips, trik, dan informasi terbaru seputar teknologi pemindaian</p>
+        <div class="h-1 w-20 bg-blue-600 mx-auto rounded-full mt-4"></div>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Blog 1 -->
+        <div class="bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 hover:border-zinc-700 transition-colors flex flex-col">
+          <div class="h-48 overflow-hidden bg-zinc-800 relative group">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-900 to-zinc-900 flex items-center justify-center">
+              <i class="fa-solid fa-mobile-screen-button text-5xl text-zinc-700"></i>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <span class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">Tips</span>
+            <h3 class="font-bold text-lg mb-3 group-hover:text-blue-400 transition-colors">Cara Scan Barcode Tanpa Install Aplikasi</h3>
+            <p class="text-zinc-400 text-sm mb-4 line-clamp-2 flex-grow">Pelajari cara mudah memindai barcode produk hanya menggunakan browser web ponsel Anda.</p>
+            <a href="#" class="text-sm font-bold text-white border-b border-blue-500 pb-0.5 hover:text-blue-400 w-fit">Baca Selengkapnya</a>
+          </div>
+        </div>
+
+        <!-- Blog 2 -->
+        <div class="bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 hover:border-zinc-700 transition-colors flex flex-col">
+          <div class="h-48 overflow-hidden bg-zinc-800 relative group">
+            <div class="absolute inset-0 bg-gradient-to-br from-emerald-900 to-zinc-900 flex items-center justify-center">
+              <i class="fa-solid fa-qrcode text-5xl text-zinc-700"></i>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2">Teknologi</span>
+            <h3 class="font-bold text-lg mb-3 group-hover:text-blue-400 transition-colors">Perbedaan Barcode dan QR Code</h3>
+            <p class="text-zinc-400 text-sm mb-4 line-clamp-2 flex-grow">Memahami fungsi unik dan kegunaan masing-masing jenis kode dalam dunia bisnis modern.</p>
+            <a href="#" class="text-sm font-bold text-white border-b border-blue-500 pb-0.5 hover:text-blue-400 w-fit">Baca Selengkapnya</a>
+          </div>
+        </div>
+
+        <!-- Blog 3 -->
+        <div class="bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 hover:border-zinc-700 transition-colors flex flex-col">
+          <div class="h-48 overflow-hidden bg-zinc-800 relative group">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-900 to-zinc-900 flex items-center justify-center">
+              <i class="fa-solid fa-star text-5xl text-zinc-700"></i>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <span class="text-xs font-bold text-purple-400 uppercase tracking-wider mb-2">Review</span>
+            <h3 class="font-bold text-lg mb-3 group-hover:text-blue-400 transition-colors">Scanner Online Terbaik 2026</h3>
+            <p class="text-zinc-400 text-sm mb-4 line-clamp-2 flex-grow">Perbandingan fitur dan kecepatan dari berbagai layanan pemindai barcode berbasis web tahun ini.</p>
+            <a href="#" class="text-sm font-bold text-white border-b border-blue-500 pb-0.5 hover:text-blue-400 w-fit">Baca Selengkapnya</a>
+          </div>
+        </div>
+
+        <!-- Blog 4 (New) -->
+        <div class="bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 hover:border-zinc-700 transition-colors flex flex-col">
+          <div class="h-48 overflow-hidden bg-zinc-800 relative group">
+            <div class="absolute inset-0 bg-gradient-to-br from-red-900/50 to-zinc-900 flex items-center justify-center">
+              <i class="fa-solid fa-shield-virus text-5xl text-zinc-700"></i>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <span class="text-xs font-bold text-red-400 uppercase tracking-wider mb-2">Security</span>
+            <h3 class="font-bold text-lg mb-3 group-hover:text-blue-400 transition-colors">Tips Keamanan Saat Scan Barcode</h3>
+            <p class="text-zinc-400 text-sm mb-4 line-clamp-2 flex-grow">Mengapa Anda harus berhati-hati saat memindai kode QR di tempat umum dan bagaimana mendeteksi link berbahaya.</p>
+            <a href="#" class="text-sm font-bold text-white border-b border-blue-500 pb-0.5 hover:text-blue-400 w-fit">Baca Selengkapnya</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section (Expanded to 8 questions) -->
+    <section class="mt-24 max-w-3xl mx-auto pb-20">
+      <h2 class="text-2xl font-bold text-center mb-10">Pertanyaan Umum (FAQ)</h2>
+      <div class="space-y-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+          <h3 class="font-bold text-blue-400 mb-2 text-sm uppercase tracking-wide">Apakah benar-benar gratis?</h3>
+          <p class="text-zinc-400 text-sm leading-relaxed">Ya, 100% gratis tanpa biaya tersembunyi atau langganan premium. Kami berkomitmen memberikan akses teknologi pemindaian terbaik untuk semua orang Indonesia.</p>
+        </div>
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+          <h3 class="font-bold text-blue-400 mb-2 text-sm uppercase tracking-wide">Apakah data saya aman?</h3>
+          <p class="text-zinc-400 text-sm leading-relaxed">Sangat aman. Proses scanning dilakukan 100% di browser Anda (client-side). Kami tidak menyimpan gambar atau hasil scan Anda di server kami.</p>
+        </div>
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+          <h3 class="font-bold text-blue-400 mb-2 text-sm uppercase tracking-wide">Format apa yang didukung?</h3>
+          <p class="text-zinc-400 text-sm leading-relaxed">Kami mendukung semua format standar termasuk QR Code, EAN-13, UPC, Code 128, Data Matrix, PDF417, dan Aztec.</p>
+        </div>
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+          <h3 class="font-bold text-blue-400 mb-2 text-sm uppercase tracking-wide">Bagaimana cara menggunakannya?</h3>
+          <p class="text-zinc-400 text-sm leading-relaxed">Cukup klik tombol "Mulai Kamera", izinkan akses, dan arahkan kode ke area bingkai biru. Sistem akan otomatis mendeteksi.</p>
+        </div>
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+          <h3 class="font-bold text-blue-400 mb-2 text-sm uppercase tracking-wide">Apakah perlu koneksi internet?</h3>
+          <p class="text-zinc-400 text-sm leading-relaxed">Ya, Anda memerlukan koneksi internet untuk memuat halaman web ini. Namun, setelah dimuat, proses pemindaian berjalan lancar.</p>
+        </div>
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+          <h3 class="font-bold text-blue-400 mb-2 text-sm uppercase tracking-wide">Bisakah memindai gambar dari galeri?</h3>
+          <p class="text-zinc-400 text-sm leading-relaxed">Tentu saja. Gunakan tab "Unggah Gambar" atau ikon kamera di dalam kotak scanner untuk memilih file dari HP Anda.</p>
+        </div>
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+          <h3 class="font-bold text-blue-400 mb-2 text-sm uppercase tracking-wide">Bagaimana cara menghapus riwayat?</h3>
+          <p class="text-zinc-400 text-sm leading-relaxed">Masuk ke tab "Riwayat", Anda dapat menghapus item satu per satu atau menghapus semua sekaligus dengan tombol "Hapus".</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- FOOTER (Rich with links) -->
+  <footer class="border-t border-zinc-900 bg-[#050505] mt-12 pt-16 pb-8">
+    <div class="max-w-4xl mx-auto px-5">
+      <div class="grid md:grid-cols-4 gap-12 mb-12">
+        <div class="col-span-1 md:col-span-2">
+          <div class="flex items-center gap-3 mb-6">
+             <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/50"><i class="fa-solid fa-expand text-white text-lg"></i></div>
+             <span class="font-bold text-2xl tracking-tight">Scan<span class="text-blue-500">Gratis</span></span>
+          </div>
+          <p class="text-zinc-500 text-sm leading-relaxed max-w-sm">
+            Platform pemindai barcode dan QR code nomor #1 di Indonesia. Cepat, akurat, dan mengutamakan privasi pengguna.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-bold mb-6 text-zinc-300 text-sm uppercase tracking-wider">Menu</h4>
+          <ul class="space-y-3 text-sm text-zinc-500">
+            <li><a href="#" class="hover:text-blue-400 transition-colors">Beranda</a></li>
+            <li><a href="#" class="hover:text-blue-400 transition-colors">Cara Kerja</a></li>
+            <li><a href="#" class="hover:text-blue-400 transition-colors">Blog</a></li>
+            <li><a href="#" class="hover:text-blue-400 transition-colors">Kontak</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold mb-6 text-zinc-300 text-sm uppercase tracking-wider">Legal</h4>
+          <ul class="space-y-3 text-sm text-zinc-500">
+            <li><a href="#" class="hover:text-blue-400 transition-colors">Kebijakan Privasi</a></li>
+            <li><a href="#" class="hover:text-blue-400 transition-colors">Syarat & Ketentuan</a></li>
+            <li><a href="#" class="hover:text-blue-400 transition-colors">Disclaimer</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold mb-6 text-zinc-300 text-sm uppercase tracking-wider">Hubungi Kami</h4>
+          <ul class="space-y-3 text-sm text-zinc-500">
+            <li><a href="#" class="hover:text-blue-400 transition-colors">support@scangratias.id</a></li>
+            <li><a href="#" class="hover:text-blue-400 transition-colors">+62 812 3456 7890</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-zinc-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-zinc-600 text-xs">
+        <p>&copy; 2026 Scan Barcode Online Gratis. All rights reserved.</p>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-facebook text-lg"></i></a>
+          <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-twitter text-lg"></i></a>
+          <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-instagram text-lg"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- RESULT MODAL (Exact ScanBarcode.net Style - Unchanged) -->
+  <div id="resultModal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex flex-col">
+    <div class="flex justify-end p-4">
+      <button onclick="closeModal()" class="w-10 h-10 bg-zinc-800/80 hover:bg-zinc-700 rounded-full flex items-center justify-center text-white transition-colors z-50">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+    <div class="flex-grow overflow-y-auto px-4 pb-12">
+      <div class="max-w-md mx-auto">
+        <div class="bg-zinc-900 rounded-3xl p-6 shadow-2xl border border-zinc-800 relative overflow-hidden mb-6">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="bg-emerald-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-lg shrink-0">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold leading-none">Barcode Produk</h3>
+              <p class="text-emerald-400 text-[10px] font-bold uppercase tracking-wider mt-1">EAN-13</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 text-sm mb-6">
+            <div class="bg-zinc-800/50 p-3 rounded-xl border border-zinc-700/50">
+              <span class="text-zinc-500 text-[10px] font-bold uppercase block mb-1">Asal Negara</span>
+              <span class="font-bold text-zinc-100 text-base">India</span>
+            </div>
+            <div class="bg-zinc-800/50 p-3 rounded-xl border border-zinc-700/50">
+              <span class="text-zinc-500 text-[10px] font-bold uppercase block mb-1">Kode Produsen</span>
+              <span class="font-mono font-bold text-zinc-100 text-base tracking-wider">910600</span>
+            </div>
+            <div class="col-span-2 bg-zinc-800/50 p-3 rounded-xl border border-zinc-700/50">
+              <span class="text-zinc-500 text-[10px] font-bold uppercase block mb-1">Kode Produk</span>
+              <span class="font-mono font-bold text-zinc-100 text-lg tracking-wider">5495</span>
+            </div>
+          </div>
+          <div class="bg-black rounded-xl p-5 text-center mb-6 border border-zinc-800 shadow-inner">
+            <p id="resNumber" class="font-mono text-2xl md:text-3xl text-white tracking-widest font-bold break-all">8909106005495</p>
+          </div>
+          <div class="flex gap-3 mb-3">
+            <button onclick="copyResult()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-3 rounded-xl font-bold text-sm border border-zinc-700 transition-colors flex items-center justify-center gap-2">
+              <i class="fa-regular fa-copy"></i> Salin
+            </button>
+            <button onclick="scanAgain()" class="flex-1 bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold text-sm shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-rotate-right"></i> Scan Lagi
+            </button>
+          </div>
+          <button onclick="searchProduct()" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl text-base font-bold flex items-center justify-center gap-3 shadow-xl shadow-blue-600/25 transition-all transform active:scale-[0.98]">
+            <i class="fa-solid fa-magnifying-glass"></i> Cari Info Produk
+          </button>
+          <div class="flex justify-center gap-2 mt-6">
+            <span class="bg-emerald-600/10 text-emerald-400 border border-emerald-600/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide">Instant</span>
+            <span class="bg-blue-600/10 text-blue-400 border border-blue-600/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide">100% Gratis</span>
+            <span class="bg-red-600/10 text-red-400 border border-red-600/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide">Aman</span>
+          </div>
+        </div>
+        <div class="mb-6">
+          <h2 class="text-lg font-bold mb-3 border-b border-zinc-800 pb-2">Riwayat Scan</h2>
+          <div id="historyListModal" class="space-y-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-zinc-800 text-white px-6 py-3 rounded-2xl shadow-2xl border border-zinc-700 flex items-center gap-3 transition-all duration-300 opacity-0 translate-y-10 z-[60] pointer-events-none">
+    <i id="toast-icon" class="fa-solid fa-circle-info text-blue-400"></i>
+    <span id="toast-message" class="font-medium">Info</span>
+  </div>
+
+  <script>
+    let html5QrCode = null;
+    let torchOn = false;
+    let isScanning = false;
+    let history = JSON.parse(localStorage.getItem('scanHistory') || '[]');
+
+    function switchTab(n) {
+      document.querySelectorAll('#content0,#content1,#content2').forEach(c => c.classList.add('hidden'));
+      document.getElementById(`content${n}`).classList.remove('hidden');
+      [0,1,2].forEach(i => {
+        const btn = document.getElementById(`tab${i}`);
+        btn.className = "flex-1 py-3 rounded-xl font-bold text-sm transition-all text-zinc-400 hover:text-white hover:bg-zinc-800";
+      });
+      document.getElementById(`tab${n}`).className = "flex-1 py-3 rounded-xl font-bold text-sm transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/20";
+      if (n === 2) renderHistory('main');
+      if (n !== 0) stopScan();
+    }
+
+    function initScanner() {
+      html5QrCode = new Html5Qrcode("reader");
+      const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+      html5QrCode.start(
+        { facingMode: "environment" },
+        config,
+        (decodedText) => {
+          stopScan();
+          showProductResult(decodedText);
+        }
+      ).then(() => {
+        isScanning = true;
+        document.getElementById('torchBtnFab').classList.remove('hidden');
+      }).catch(err => {
+        console.error(err);
+        showToast("Gagal akses kamera", "error");
+        stopScan();
+      });
+    }
+
+    function startScan() {
+      if (isScanning) return;
+      // Fade out the market image and show the black background prompt
+      document.getElementById('placeholder').style.opacity = '0';
+      document.getElementById('scan-prompt').style.opacity = '1';
+      document.getElementById('laser').style.display = 'block';
+      document.getElementById('btn-start').classList.add('hidden');
+      document.getElementById('btn-stop').classList.remove('hidden');
+      if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+          html5QrCode.clear();
+          html5QrCode = null;
+          initScanner();
+        }).catch(() => {
+          html5QrCode.clear();
+          html5QrCode = null;
+          initScanner();
+        });
+      } else {
+        initScanner();
+      }
+    }
+
+    function stopScan() {
+      if (!html5QrCode || !isScanning) return;
+      html5QrCode.stop().then(() => {
+        html5QrCode.clear();
+        html5QrCode = null;
+        isScanning = false;
+        // Fade in the market image and hide prompt
+        document.getElementById('placeholder').style.opacity = '1';
+        document.getElementById('scan-prompt').style.opacity = '0';
+        document.getElementById('laser').style.display = 'none';
+        document.getElementById('btn-start').classList.remove('hidden');
+        document.getElementById('btn-stop').classList.add('hidden');
+        document.getElementById('torchBtnFab').classList.add('hidden');
+        torchOn = false;
+        document.getElementById('torchBtnFab').classList.remove('active-torch');
+      }).catch(err => console.log("Stop error ignored", err));
+    }
+
+    function toggleTorch() {
+      if (!html5QrCode || !isScanning) return;
+      torchOn = !torchOn;
+      html5QrCode.applyVideoConstraints({ advanced: [{ torch: torchOn }] });
+      const btn = document.getElementById('torchBtnFab');
+      if(torchOn) btn.classList.add('active-torch');
+      else btn.classList.remove('active-torch');
+    }
+
+    function scanUploadedFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      showToast("Memproses...", "info");
+      // Process file in background, do not replace scanner box image
+      if (html5QrCode) { html5QrCode.clear(); html5QrCode = null; }
+      const scanner = new Html5Qrcode("reader");
+      scanner.scanFile(file, true)
+        .then(text => showProductResult(text))
+        .catch(() => showToast("Barcode tidak terdeteksi", "error"));
+      e.target.value = '';
+    }
+
+    function showProductResult(text) {
+      document.getElementById('resNumber').innerText = text;
+      document.getElementById('resultModal').classList.remove('hidden');
+      saveHistory(text);
+      renderHistory('modal');
+      if (navigator.vibrate) navigator.vibrate(200);
+    }
+
+    function copyResult() {
+      const num = document.getElementById('resNumber').innerText;
+      navigator.clipboard.writeText(num).then(() => showToast("Berhasil disalin!", "success"));
+    }
+
+    function scanAgain() {
+      document.getElementById('resultModal').classList.add('hidden');
+      startScan();
+    }
+
+    function searchProduct() {
+      const num = document.getElementById('resNumber').innerText;
+      window.open(`https://www.google.com/search?q=${encodeURIComponent(num)}+product+info`, '_blank');
+      document.getElementById('resultModal').classList.add('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('resultModal').classList.add('hidden');
+    }
+
+    function saveHistory(text) {
+      history.unshift({ text, time: new Date().toLocaleString('id-ID') });
+      if (history.length > 50) history.pop();
+      localStorage.setItem('scanHistory', JSON.stringify(history));
+    }
+
+    function renderHistory(type) {
+      const container = document.getElementById(type === 'modal' ? 'historyListModal' : 'historyListMain');
+      if(!container) return;
+      container.innerHTML = '';
+      if (history.length === 0) {
+        container.innerHTML = `<div class="text-center text-zinc-500 py-8 text-sm border border-dashed border-zinc-800 rounded-xl">Belum ada riwayat.</div>`;
+        return;
+      }
+      history.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = "bg-zinc-900 p-4 rounded-xl flex justify-between items-center border border-zinc-800 hover:border-zinc-700 transition-colors group";
+        div.innerHTML = `
+          <div class="flex gap-3 overflow-hidden cursor-pointer" onclick='document.getElementById("resNumber").innerText="${escapeHtml(item.text)}"; document.getElementById("resultModal").classList.remove("hidden");'>
+            <div class="bg-emerald-500/10 w-10 h-10 rounded-lg flex items-center justify-center text-emerald-500 shrink-0 border border-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+              <i class="fa-solid fa-barcode text-xs"></i>
+            </div>
+            <div class="min-w-0">
+              <p class="font-mono text-zinc-200 truncate text-sm font-medium">${escapeHtml(item.text)}</p>
+              <p class="text-[10px] text-zinc-500 mt-1">${item.time}</p>
+            </div>
+          </div>
+          <button onclick="deleteHistory(${i});" class="text-zinc-600 hover:text-red-400 px-3 transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function deleteHistory(i) {
+      history.splice(i, 1);
+      localStorage.setItem('scanHistory', JSON.stringify(history));
+      renderHistory('main');
+      renderHistory('modal');
+    }
+
+    function clearAllHistory() {
+      if (confirm("Yakin ingin menghapus semua riwayat?")) {
+        history = [];
+        localStorage.setItem('scanHistory', '[]');
+        renderHistory('main');
+        renderHistory('modal');
+        showToast("Riwayat dibersihkan", "info");
+      }
+    }
+
+    function exportJSON() {
+      if(history.length === 0) return showToast("Tidak ada data", "error");
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(history, null, 2)], {type: 'application/json'}));
+      a.download = 'riwayat-scan.json';
+      a.click();
+    }
+
+    function exportCSV() {
+      if(history.length === 0) return showToast("Tidak ada data", "error");
+      let csv = "Waktu,Hasil\n";
+      history.forEach(h => {
+        csv += `"${h.time}","${h.text.replace(/"/g, '""')}"\n`;
+      });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'}));
+      a.download = 'riwayat-scan.csv';
+      a.click();
+    }
+
+    function showToast(msg, type='info') {
+      const toast = document.getElementById('toast');
+      const txt = document.getElementById('toast-message');
+      const icon = document.getElementById('toast-icon');
+      txt.innerText = msg;
+      icon.className = type === 'success' ? "fa-solid fa-circle-check text-emerald-400" : 
+                      type === 'error' ? "fa-solid fa-circle-xmark text-red-400" :
+                      "fa-solid fa-circle-info text-blue-400";
+      toast.classList.remove('opacity-0', 'translate-y-10');
+      setTimeout(() => toast.classList.add('opacity-0', 'translate-y-10'), 3000);
+    }
+
+    function escapeHtml(text) {
+      if(!text) return "";
+      return text.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#039;"}[m]));
+    }
+
+    window.onload = () => switchTab(0);
+  </script>
+</body>
+</html>
